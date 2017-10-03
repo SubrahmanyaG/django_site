@@ -23,3 +23,12 @@ class UserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserDetails
         fields = ('person', 'date_of_birth', 'employee_id', 'current_address', 'city', 'state', 'pin')
+
+
+class test(serializers.ModelSerializer):
+    """
+    serializer class for userDetails object
+    """
+    class Meta:
+        model = UserDetails
+        fields = ('date_of_birth', 'employee_id', 'current_address', 'city', 'state', 'pin')

@@ -1,4 +1,5 @@
 from django.db.models import Q
+from django.http import HttpResponse
 
 from user_details.api import serializers
 from django.contrib.auth.models import User
@@ -6,6 +7,7 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 
+from user_details.api.serializers import UserDetailsSerializer, test
 from user_details.models import UserDetails
 
 
@@ -32,6 +34,7 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
         """
         Return user details for requested user
         Filter based on the username, state, city, pin
+        ex: http://127.0.0.1:8000/api/userDetails/?pin=560022
         :return:
         """
         username = self.request.query_params.get('username', None)
@@ -40,3 +43,31 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
         pin = self.request.query_params.get('pin', None)
         return UserDetails.objects.filter(Q(person__username=username) | Q(state=state) |
                                           Q(city=city) | Q(pin=pin))
+    def create(self, request):
+        """
+        To create or modify the user Details
+        """
+        data = request.data
+        print(data.get('pin'))
+        user = User.objects.filter(username=data['username']).first()
+        if not user:
+            user = User(username=data['username'])
+            user.save()
+        user_detail = UserDetails.objects.filter(person__username=data['username']).first()
+        if user_detail:
+            user_detail.city = data.get('city')
+            user_detail.state = data.get('state')
+            user_detail.pin = data.get('pin')
+            user_detail.employee_id = data.get('employee_id')
+            user_detail.current_address = data.get('current_address')
+            user_detail.save()
+        else:
+            UserDetails.objects.create(person=user,
+                                       current_address=data.get('current_address'),
+                                       state=data.get('state'),
+                                       city=data.get('city'),
+                                       pin=data.get('pin'),
+                                       employee_id=data.get('employee_id'),
+                                       )
+
+        return Response(status=201)
