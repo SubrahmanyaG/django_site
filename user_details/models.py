@@ -5,7 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 
-MEDIA_ROOT = '/home/hi-325/workspace/djangoAssignment/django_site/user_details/static/'
+MEDIA_ROOT = 'user_details/static/'
 
 
 class UserDetails(models.Model):
