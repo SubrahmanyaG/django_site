@@ -1,13 +1,11 @@
 from django.db.models import Q
 from django.http import HttpResponse
 
-from user_details.api import serializers
 from django.contrib.auth.models import User
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
-
-from user_details.api.serializers import UserDetailsSerializer, test
+from user_details.api import serializers
 from user_details.models import UserDetails
 
 
@@ -46,9 +44,16 @@ class UserDetailsViewSet(viewsets.ModelViewSet):
     def create(self, request):
         """
         To create or modify the user Details
+        sample post json body
+        {
+            "username":"Test7",
+            "employee_id":132,
+            "state": "KERALA",
+            "pin":121221
+
+        }
         """
         data = request.data
-        print(data.get('pin'))
         user = User.objects.filter(username=data['username']).first()
         if not user:
             user = User(username=data['username'])
